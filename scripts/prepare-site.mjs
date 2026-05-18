@@ -149,6 +149,8 @@ function normalize(html, page) {
   html = html.replace(/<svg width="34" height="34" viewBox="0 0 34 34" fill="none"(?: xmlns="http:\/\/www\.w3\.org\/2000\/svg")?>[\s\S]*?<\/svg>/g, logoSvg(34));
   html = html.replace(/<svg width="30" height="30" viewBox="0 0 34 34" fill="none">[\s\S]*?<\/svg>/g, logoSvg(30));
   html = html.replace(/<li><a href="blog\.html">Blog<\/a><\/li>/g, '<li><a href="blog.html">Blog</a></li>');
+  html = html.replace(/<a href="#">Terms of Service<\/a>/g, '<a href="terms.html">Terms and Conditions</a>');
+  html = html.replace(/<a href="#" style="([^"]*)">Terms of Service<\/a>/g, '<a href="terms.html" style="$1">Terms and Conditions</a>');
   html = injectSeo(html, page);
   if (page.out === 'index.html') html = cleanupHome(html);
   if (page.out === 'contact.html') html = cleanupContact(html);
@@ -230,7 +232,7 @@ const blogPage = `<!DOCTYPE html>
   <div class="container">
     <div class="footer-bottom">
       <span>© 2026 Gadar Global Solutions. All rights reserved.</span>
-      <div class="footer-legal"><a href="index.html">Home</a><a href="contact.html">Contact</a></div>
+      <div class="footer-legal"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="terms.html">Terms and Conditions</a></div>
     </div>
   </div>
 </footer>
@@ -242,7 +244,7 @@ writeFileSync('blog.html', blogPage);
 rmSync('public', { recursive: true, force: true });
 mkdirSync('public/assets', { recursive: true });
 
-for (const file of ['index.html', 'about.html', 'services.html', 'portfolio.html', 'contact.html', 'blog.html', 'gadar-styles.css', 'site.js', 'favicon.svg']) {
+for (const file of ['index.html', 'about.html', 'services.html', 'portfolio.html', 'contact.html', 'blog.html', 'terms.html', 'gadar-styles.css', 'site.js', 'favicon.svg']) {
   cpSync(file, `public/${file}`);
 }
 for (const asset of ['ai-automation.jpg', 'enterprise-software.jpg', 'logistics-fleet.jpg', 'company.jpg', 'mobile-apps.jpg', 'healthtech-ehr.jpg', 'fintech-fraud.jpg', 'edtech-lms.jpg', 'ecommerce-platform.jpg', 'fullstack-dev.jpg', 'gadar-logo.svg', 'apple-touch-icon.svg']) {

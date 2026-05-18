@@ -9,6 +9,8 @@
     { "source": "/services", "destination": "/services.html" },
     { "source": "/portfolio", "destination": "/portfolio.html" },
     { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/terms", "destination": "/terms.html" },
+    { "source": "/terms-and-conditions", "destination": "/terms.html" },
     { "source": "/contact", "destination": "/contact.html" }
   ],
   "redirects": [
