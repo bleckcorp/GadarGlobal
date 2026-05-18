@@ -12,7 +12,14 @@ const fallbackPosts = [
       'Most automation projects fail when they start with tools instead of process. The best results come from mapping repeated handoffs, deciding what should be automated, and keeping humans in the loop for judgment-heavy decisions.',
     date: '2026-05-18',
     category: 'AI Strategy',
-    link: 'contact.html',
+    featuredImage: '/assets/ai-automation.jpg',
+    slug: 'ai-automation-operational-drag-revenue-momentum',
+    link: '/blog/ai-automation-operational-drag-revenue-momentum',
+    detailUrl: '/blog/ai-automation-operational-drag-revenue-momentum',
+    content: `
+      <p>Most automation projects fail when they begin with tools instead of operations. The useful starting point is the work itself: repeated handoffs, approval delays, data entry loops, reporting bottlenecks, and the decisions that slow a team down.</p>
+      <p>A practical AI automation roadmap starts by separating routine work from judgment-heavy work. Routine work can often be automated directly. Judgment-heavy work should be supported with recommendations, summaries, alerts, or draft outputs that keep a human in control.</p>
+    `,
   },
 ];
 
@@ -54,12 +61,12 @@ function renderPost(post, heading = 'h3') {
   const title = stripHtml(post.title?.rendered || post.title || fallbackPosts[0].title);
   const excerpt = stripHtml(post.excerpt?.rendered || post.excerpt || fallbackPosts[0].excerpt).replace(/\s+/g, ' ').trim();
   const category = post.category || post.categories?.[0]?.name || 'Insights';
-  const link = post.link || 'blog.html';
+  const link = post.detailUrl || post.link || `/blog/${post.slug || fallbackPosts[0].slug}`;
   return `<article class="blog-card reveal">
     <div class="blog-meta">${category}</div>
     <${heading}>${title}</${heading}>
     <p>${excerpt}</p>
-    <a class="blog-link" href="${link}" target="${/^https?:/.test(link) ? '_blank' : '_self'}" rel="noopener">Read article</a>
+    <a class="blog-link" href="${link}">Read article</a>
   </article>`;
 }
 
@@ -82,6 +89,24 @@ async function loadPosts() {
   } catch {
     return fallbackPosts;
   }
+}
+
+async function loadPost(slug) {
+  try {
+    const response = await fetch(`/api/post?slug=${encodeURIComponent(slug || fallbackPosts[0].slug)}`);
+    if (!response.ok) throw new Error('Post unavailable');
+    return await response.json();
+  } catch {
+    return { ...fallbackPosts[0], slug: slug || fallbackPosts[0].slug };
+  }
+}
+
+function activePostSlug() {
+  const params = new URLSearchParams(window.location.search);
+  const querySlug = params.get('slug');
+  if (querySlug) return querySlug;
+  const parts = window.location.pathname.split('/').filter(Boolean);
+  return parts[0] === 'blog' && parts[1] ? parts[1] : fallbackPosts[0].slug;
 }
 
 function updateContactLinks(config) {
@@ -199,6 +224,28 @@ async function initBlog() {
   document.querySelectorAll('.blog-card').forEach((card) => card.classList.add('visible'));
 }
 
+async function initBlogPost() {
+  const shell = document.querySelector('[data-blog-post]');
+  if (!shell) return;
+  const post = await loadPost(activePostSlug());
+  const title = stripHtml(post.title || fallbackPosts[0].title);
+  const excerpt = stripHtml(post.excerpt || fallbackPosts[0].excerpt);
+  const date = post.date ? new Date(post.date).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) : '';
+  document.title = `${title} | Gadar Global Blog`;
+  shell.innerHTML = `
+    <div class="blog-detail-meta">${post.category || 'Insights'}${date ? ` · ${date}` : ''}</div>
+    <h1 class="display">${title}</h1>
+    ${excerpt ? `<p class="blog-detail-excerpt">${excerpt}</p>` : ''}
+    ${post.featuredImage ? `<img class="blog-detail-image" src="${post.featuredImage}" alt="">` : ''}
+    <div class="blog-detail-content">${post.content || fallbackPosts[0].content}</div>
+    <div class="blog-detail-actions">
+      <a class="btn btn-outline" href="/blog">Back to Blog</a>
+      ${post.sourceUrl ? `<a class="btn btn-ghost" href="${post.sourceUrl}" target="_blank" rel="noopener">View source</a>` : ''}
+    </div>
+  `;
+  shell.classList.add('visible');
+}
+
 function initContactForm() {
   const form = document.getElementById('contactForm');
   if (!form) return;
@@ -233,5 +280,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initContactForm();
   initHomeDynamicSections();
   initBlog();
+  initBlogPost();
   updateContactLinks(await loadConfig());
 });

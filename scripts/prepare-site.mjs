@@ -149,8 +149,8 @@ function normalize(html, page) {
   html = html.replace(/<svg width="34" height="34" viewBox="0 0 34 34" fill="none"(?: xmlns="http:\/\/www\.w3\.org\/2000\/svg")?>[\s\S]*?<\/svg>/g, logoSvg(34));
   html = html.replace(/<svg width="30" height="30" viewBox="0 0 34 34" fill="none">[\s\S]*?<\/svg>/g, logoSvg(30));
   html = html.replace(/<li><a href="blog\.html">Blog<\/a><\/li>/g, '<li><a href="blog.html">Blog</a></li>');
-  html = html.replace(/<a href="#">Terms of Service<\/a>/g, '<a href="terms.html">Terms and Conditions</a>');
-  html = html.replace(/<a href="#" style="([^"]*)">Terms of Service<\/a>/g, '<a href="terms.html" style="$1">Terms and Conditions</a>');
+  html = html.replace(/<a href="#"([^>]*)>Privacy Policy<\/a>/g, '<a href="privacy.html"$1>Privacy Policy</a>');
+  html = html.replace(/<a href="#"([^>]*)>Terms of Service<\/a>/g, '<a href="terms.html"$1>Terms and Conditions</a>');
   html = injectSeo(html, page);
   if (page.out === 'index.html') html = cleanupHome(html);
   if (page.out === 'contact.html') html = cleanupContact(html);
@@ -209,9 +209,9 @@ const blogPage = `<!DOCTYPE html>
     <div class="page-hero-bg"><div class="page-hero-dots"></div></div>
     <div class="container" style="position:relative; z-index:1;">
       <div class="reveal" style="max-width:760px;">
-        <span class="label">Insights</span>
-        <h1 class="display" style="margin-bottom:1.25rem;">Field notes on<br><span class="green">AI and software.</span></h1>
-        <p class="body-lg" style="max-width:560px;">Articles from our team on automation, product delivery, cloud systems, and practical AI adoption.</p>
+        <span class="label">Blog</span>
+        <h1 class="display" style="margin-bottom:1.25rem;">The Gadar Global<br><span class="green">Blog.</span></h1>
+        <p class="body-lg" style="max-width:560px;">Insights, updates, and practical articles on AI automation, product delivery, cloud systems, and digital transformation.</p>
       </div>
     </div>
   </section>
@@ -232,7 +232,7 @@ const blogPage = `<!DOCTYPE html>
   <div class="container">
     <div class="footer-bottom">
       <span>© 2026 Gadar Global Solutions. All rights reserved.</span>
-      <div class="footer-legal"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="terms.html">Terms and Conditions</a></div>
+      <div class="footer-legal"><a href="index.html">Home</a><a href="contact.html">Contact</a><a href="privacy.html">Privacy Policy</a><a href="terms.html">Terms and Conditions</a></div>
     </div>
   </div>
 </footer>
@@ -241,10 +241,71 @@ const blogPage = `<!DOCTYPE html>
 </html>`;
 writeFileSync('blog.html', blogPage);
 
+const blogPostPage = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog Post | Gadar Global Solutions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/gadar-styles.css">
+  ${seoTags({
+    title: 'Blog Post | Gadar Global Solutions',
+    description: 'Read Gadar Global Solutions articles on AI automation, product delivery, cloud systems, and digital transformation.',
+    path: '/blog-post.html',
+    image: '/assets/ai-automation.jpg',
+  })}
+</head>
+<body>
+<nav class="nav scrolled" id="nav">
+  <div class="container">
+    <div class="nav-inner">
+      <a href="/index.html" class="nav-logo"><img class="brand-mark" src="/assets/gadar-logo.svg" width="34" height="34" alt="Gadar Global Solutions logo"><span class="nav-wordmark">Gadar<span class="dot">.</span></span></a>
+      <ul class="nav-links">
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/services.html">Services</a></li>
+        <li><a href="/index.html#solutions">Solutions</a></li>
+        <li><a href="/portfolio.html">Portfolio</a></li>
+        <li><a href="/blog.html" class="active">Blog</a></li>
+      </ul>
+      <a href="/contact.html" class="btn btn-primary nav-cta-desktop">Get Started</a>
+      <button class="nav-mobile-btn" id="mobileToggle" aria-label="Menu"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><line x1="2" y1="6" x2="20" y2="6"/><line x1="2" y1="11" x2="20" y2="11"/><line x1="2" y1="16" x2="20" y2="16"/></svg></button>
+    </div>
+    <div class="nav-mobile-menu" id="mobileMenu">
+      <a href="/about.html">About</a><a href="/services.html">Services</a><a href="/portfolio.html">Portfolio</a><a href="/blog.html">Blog</a><a href="/contact.html">Contact</a>
+    </div>
+  </div>
+</nav>
+<main>
+  <article class="section blog-detail-section">
+    <div class="container">
+      <div class="blog-detail reveal" data-blog-post>
+        <div class="blog-detail-meta">Loading article</div>
+        <h1 class="display">Loading blog post...</h1>
+        <p class="blog-detail-excerpt">Fetching the latest article from WordPress.</p>
+      </div>
+    </div>
+  </article>
+</main>
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <span>© 2026 Gadar Global Solutions. All rights reserved.</span>
+      <div class="footer-legal"><a href="/blog.html">Blog</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy Policy</a><a href="/terms.html">Terms and Conditions</a></div>
+    </div>
+  </div>
+</footer>
+<script src="/site.js" defer></script>
+</body>
+</html>`;
+writeFileSync('blog-post.html', blogPostPage);
+
 rmSync('public', { recursive: true, force: true });
 mkdirSync('public/assets', { recursive: true });
 
-for (const file of ['index.html', 'about.html', 'services.html', 'portfolio.html', 'contact.html', 'blog.html', 'terms.html', 'gadar-styles.css', 'site.js', 'favicon.svg']) {
+for (const file of ['index.html', 'about.html', 'services.html', 'portfolio.html', 'contact.html', 'blog.html', 'blog-post.html', 'privacy.html', 'terms.html', 'gadar-styles.css', 'site.js', 'favicon.svg']) {
   cpSync(file, `public/${file}`);
 }
 for (const asset of ['ai-automation.jpg', 'enterprise-software.jpg', 'logistics-fleet.jpg', 'company.jpg', 'mobile-apps.jpg', 'healthtech-ehr.jpg', 'fintech-fraud.jpg', 'edtech-lms.jpg', 'ecommerce-platform.jpg', 'fullstack-dev.jpg', 'gadar-logo.svg', 'apple-touch-icon.svg']) {

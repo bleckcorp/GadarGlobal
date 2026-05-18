@@ -9,6 +9,9 @@
     { "source": "/services", "destination": "/services.html" },
     { "source": "/portfolio", "destination": "/portfolio.html" },
     { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/blog/:slug", "destination": "/blog-post.html?slug=:slug" },
+    { "source": "/privacy", "destination": "/privacy.html" },
+    { "source": "/privacy-policy", "destination": "/privacy.html" },
     { "source": "/terms", "destination": "/terms.html" },
     { "source": "/terms-and-conditions", "destination": "/terms.html" },
     { "source": "/contact", "destination": "/contact.html" }
