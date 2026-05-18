@@ -16,6 +16,34 @@ const fallbackPosts = [
   },
 ];
 
+const themeStates = ['system', 'light', 'dark'];
+const themeIcons = {
+  system: '<path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v7A2.5 2.5 0 0 1 17.5 15h-11A2.5 2.5 0 0 1 4 12.5z"/><path d="M9 21h6"/><path d="M12 15v6"/>',
+  light: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+  dark: '<path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 7 7 0 1 0 20.5 14.5Z"/>',
+};
+
+function getSavedTheme() {
+  const saved = localStorage.getItem('gadar-theme');
+  return themeStates.includes(saved) ? saved : 'system';
+}
+
+function applyTheme(theme) {
+  if (theme === 'system') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.dataset.theme = theme;
+  }
+  document.querySelectorAll('.theme-toggle').forEach((button) => {
+    button.dataset.themeState = theme;
+    button.setAttribute('aria-label', `Theme: ${theme}. Click to change.`);
+    button.title = `Theme: ${theme}`;
+    button.innerHTML = `<svg viewBox="0 0 24 24" aria-hidden="true">${themeIcons[theme]}</svg>`;
+  });
+}
+
+applyTheme(getSavedTheme());
+
 function stripHtml(value = '') {
   const div = document.createElement('div');
   div.innerHTML = value;
@@ -134,6 +162,21 @@ function initCommon() {
   }
   const mobileToggle = document.getElementById('mobileToggle');
   const mobileMenu = document.getElementById('mobileMenu');
+  if (mobileToggle && !document.querySelector('.theme-toggle')) {
+    const themeButton = document.createElement('button');
+    themeButton.type = 'button';
+    themeButton.className = 'theme-toggle';
+    mobileToggle.insertAdjacentElement('beforebegin', themeButton);
+    applyTheme(getSavedTheme());
+  }
+  document.querySelectorAll('.theme-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+      const current = getSavedTheme();
+      const next = themeStates[(themeStates.indexOf(current) + 1) % themeStates.length];
+      localStorage.setItem('gadar-theme', next);
+      applyTheme(next);
+    });
+  });
   if (mobileToggle && mobileMenu) {
     mobileToggle.addEventListener('click', () => mobileMenu.classList.toggle('open'));
   }
