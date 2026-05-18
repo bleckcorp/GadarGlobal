@@ -1,0 +1,29 @@
+{
+  "cleanUrls": true,
+  "trailingSlash": false,
+  "buildCommand": "npm run build",
+  "devCommand": "python3 -m http.server $PORT -d public",
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/about", "destination": "/about.html" },
+    { "source": "/services", "destination": "/services.html" },
+    { "source": "/portfolio", "destination": "/portfolio.html" },
+    { "source": "/blog", "destination": "/blog.html" },
+    { "source": "/contact", "destination": "/contact.html" }
+  ],
+  "redirects": [
+    { "source": "/Gadar Global.html", "destination": "/", "permanent": true },
+    { "source": "/Gadar About.html", "destination": "/about", "permanent": true },
+    { "source": "/Gadar Services.html", "destination": "/services", "permanent": true },
+    { "source": "/Gadar Portfolio.html", "destination": "/portfolio", "permanent": true },
+    { "source": "/Gadar Contact.html", "destination": "/contact", "permanent": true }
+  ],
+  "headers": [
+    {
+      "source": "/assets/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
+    }
+  ]
+}

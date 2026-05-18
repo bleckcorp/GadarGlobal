@@ -1,0 +1,11 @@
+{
+  "name": "gadar-global",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/prepare-site.mjs",
+    "dev": "node scripts/prepare-site.mjs && python3 -m http.server 4173",
+    "prepare:site": "node scripts/prepare-site.mjs"
+  }
+}
