@@ -1,3 +1,5 @@
+const STATIC_FORMS_ACCESS_KEY = '';
+
 const fallbackConfig = {
   email: 'hello@gadar.io',
   phone: '+1 (234) 567-890',
@@ -151,14 +153,14 @@ function initHomeDynamicSections() {
   const industryGrid = document.getElementById('industryGrid');
   if (industryGrid && !industryGrid.children.length) {
     [
-      ['Healthcare', 'HL'], ['Finance', 'FN'], ['E-commerce', 'EC'], ['Education', 'ED'],
-      ['Real Estate', 'RE'], ['Logistics', 'LG'], ['Manufacturing', 'MF'], ['More', '++'],
+      ['Healthcare', '🏥'], ['Finance', '📈'], ['E-commerce', '🛒'], ['Education', '📚'],
+      ['Real Estate', '🏢'], ['Logistics', '🚛'], ['Manufacturing', '⚙️'], ['More', '→'],
     ].forEach(([name, mark], index) => {
       const card = document.createElement('div');
       card.className = 'card card-green reveal visible';
       card.style.transitionDelay = `${index * 0.05}s`;
       card.style.padding = '1.5rem';
-      card.innerHTML = `<div class="industry-mark">${mark}</div><div style="font-family:var(--ff-display); font-size:0.95rem; font-weight:700; letter-spacing:-0.01em;">${name}</div>`;
+      card.innerHTML = `<div style="font-size:1.6rem; margin-bottom:0.75rem; line-height:1;">${mark}</div><div style="font-family:var(--ff-display); font-size:0.95rem; font-weight:700; letter-spacing:-0.01em;">${name}</div>`;
       industryGrid.appendChild(card);
     });
   }
@@ -255,23 +257,67 @@ function initContactForm() {
     const original = btn.innerHTML;
     btn.textContent = 'Sending...';
     btn.disabled = true;
-    try {
-      const response = await fetch('/api/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(Object.fromEntries(new FormData(form))),
-      });
-      if (!response.ok) throw new Error('Submit failed');
-      form.style.display = 'none';
-      const success = document.getElementById('successMsg');
-      if (success) success.style.display = 'block';
-    } catch {
-      btn.textContent = 'Try again';
-      btn.disabled = false;
-      setTimeout(() => {
-        btn.innerHTML = original;
-      }, 1800);
+
+    const data = Object.fromEntries(new FormData(form));
+
+    if (STATIC_FORMS_ACCESS_KEY && STATIC_FORMS_ACCESS_KEY !== '__STATIC_FORMS_ACCESS_KEY__') {
+      try {
+        const payload = {
+          ...data,
+          accessKey: STATIC_FORMS_ACCESS_KEY,
+          subject: 'New Gadar Global website inquiry',
+          replyTo: data.email,
+        };
+        const response = await fetch('https://api.staticforms.xyz/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!response.ok) throw new Error('Static Forms submission failed');
+        form.style.display = 'none';
+        const success = document.getElementById('successMsg');
+        if (success) success.style.display = 'block';
+      } catch (err) {
+        console.error('Frontend Submit Error:', err);
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(() => { btn.innerHTML = original; }, 1800);
+      }
+    } else {
+      try {
+        const response = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!response.ok) throw new Error('Submit failed');
+        form.style.display = 'none';
+        const success = document.getElementById('successMsg');
+        if (success) success.style.display = 'block';
+      } catch (err) {
+        console.error('Backend Submit Error:', err);
+        btn.textContent = 'Try again';
+        btn.disabled = false;
+        setTimeout(() => { btn.innerHTML = original; }, 1800);
+      }
     }
+  });
+}
+
+function initPortfolioFilter() {
+  const filterBar = document.getElementById('filterBar');
+  const projectsGrid = document.getElementById('projectsGrid');
+  if (!filterBar || !projectsGrid) return;
+  document.querySelectorAll('.filter-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.dataset.filter;
+      document.querySelectorAll('#projectsGrid [data-industry]').forEach((card) => {
+        const show = filter === 'all' || card.dataset.industry === filter;
+        card.style.display = show ? '' : 'none';
+      });
+    });
   });
 }
 
@@ -281,5 +327,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   initHomeDynamicSections();
   initBlog();
   initBlogPost();
+  initPortfolioFilter();
   updateContactLinks(await loadConfig());
 });
