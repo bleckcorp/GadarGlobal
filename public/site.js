@@ -1,9 +1,9 @@
 const STATIC_FORMS_ACCESS_KEY = '';
 
 const fallbackConfig = {
-  email: 'hello@gadar.io',
-  phone: '+1 (234) 567-890',
-  phoneHref: '+12345678900',
+  email: 'hello@gadarsolutions.com',
+  phone: '+234 816 514 1872',
+  phoneHref: '+2348165141872',
   location: 'Global Remote Team',
 };
 
@@ -129,8 +129,8 @@ function updateContactLinks(config) {
     link.href = `tel:${config.phoneHref}`;
   });
 
-  replaceText('hello@gadar.io', config.email);
-  replaceText('+1 (234) 567-890', config.phone);
+  replaceText('hello@gadarsolutions.com', config.email);
+  replaceText('+234 816 514 1872', config.phone);
   replaceText('Global Remote Team', config.location);
 }
 

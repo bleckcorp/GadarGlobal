@@ -6,7 +6,7 @@ export default async function handler(request, response) {
 
   const accessKey = process.env.STATIC_FORMS_ACCESS_KEY;
   const endpoint = process.env.STATIC_FORMS_ENDPOINT || 'https://api.staticforms.xyz/submit';
-  const to = process.env.GADAR_CONTACT_EMAIL || 'hello@gadar.io';
+  const to = process.env.GADAR_CONTACT_EMAIL || 'hello@gadarsolutions.com';
 
   if (!accessKey) {
     return response.status(503).json({ error: 'STATIC_FORMS_ACCESS_KEY is not configured' });
